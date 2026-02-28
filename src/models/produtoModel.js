@@ -20,26 +20,16 @@ const produtoModel = {
         return rows;
     },
 
-    inserirProduto: async (pNome, pValor, pImagem) => {
-        const sql = `INSERT INTO produto (nomeProduto, valorProduto, vinculoImagem) VALUES (?,?,?)`;
-        const [result] = await pool.query(sql, [pNome, pValor, pImagem]);
+    inserirProduto: async (pNome, pValor, pIdCategoria, pImagem) => {
+        const sql = `INSERT INTO produto (nomeProduto, valorProduto, idCategoria, vinculoImagem) VALUES (?,?,?,?)`;
+        const [result] = await pool.query(sql, [pNome, pValor, pIdCategoria, pImagem]);
         return result;
     },
 
-    atualizarProduto: async (pId, pNome, pValor, pImagem) => {
-
-        const sql = `
-            UPDATE produto 
-            SET nomeProduto = ?, 
-                valorProduto = ?, 
-                vinculoImagem = ?
-            WHERE idProduto = ?
-        `;
-
-        const values = [pNome, pValor, pImagem, pId];
-
+    atualizarProduto: async (pId, pNome, pValor, pIdCategoria, pImagem) => {
+        const sql = `UPDATE produto SET nomeProduto = ?, valorProduto = ?, idCategoria = ?, vinculoImagem = ? WHERE idProduto = ?`;
+        const values = [pNome, pValor, pIdCategoria, pImagem, pId];
         const [result] = await pool.query(sql, values);
-
         return result;
     },
 

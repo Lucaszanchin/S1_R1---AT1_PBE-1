@@ -29,8 +29,8 @@ const produtoController = {
 
             const resultado = await produtoModel.selecionarPorId(idProduto);
 
-            if (!resultado) {
-                return res.status(404).json({ message: 'produto não encontrado.' });
+            if (!resultado || resultado.length === 0) {
+                return res.status(404).json({ message: 'Produto não encontrado.' });
             }
 
             return res.status(200).json(resultado);
@@ -63,41 +63,42 @@ const produtoController = {
         }
     },
 
-
-
     incluirProduto: async (req, res) => {
         try {
-            const { nome, valor, vínculo } = req.body;
-
-            if (!nome || !valor || !vínculo) {
+            const vinculoImagem = req.file ? req.file.path : null;
+            const { nome, valor, categoria} = req.body;
+            
+            if (!nome || !valor || !categoria) {
                 return res.status(400).json({ message: 'Os dados envidos estão incorretos. Envie novamente.' });
             }
-
+            
+            
             const resultado = await produtoModel.inserirProduto(
-                nome.trim(), valor.trim(), vínculo.trim()
+                nome.trim(), valor.trim(), categoria.trim(), vinculoImagem
             );
-
+            
             if (resultado.affectedRows === 1 && resultado.insertId) {
                 res.status(201).json({ message: 'Registro incluído com sucesso', result: resultado });
             } else {
                 throw new Error('Ocorreu um erro ao incluir o registro');
             }
-
+            
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: 'Ocorreu um erro no servidor', errorMessage: error.message });
         }
     },
-
+    
     atualizarProduto: async (req, res) => {
         try {
+            const vinculoImagem = req.file ? req.file.path : null;
             const idProduto = Number(req.params.idProduto);
-
+            
             if (isNaN(idProduto) || idProduto <= 0) {
                 return res.status(400).json({ message: 'ID inválido.' });
             }
 
-            let { nome, valor, vínculo } = req.body;
+            let { nome, valor, categoria} = req.body;
 
             const produtoAtual = await produtoModel.selecionarPorId(idProduto);
 
@@ -107,15 +108,17 @@ const produtoController = {
 
             const produto = produtoAtual[0];
 
-            const novoNome = nome ?? produto.nome_produto;
-            const novoValor = valor ?? produto.valor_produto;
-            const novoVínculo = vínculo ?? produto.vínculo_produto;
+            const novoNome = nome ?? produto.nomeProduto;
+            const novoValor = valor ?? produto.valorProduto;
+            const novaCategoria = categoria ?? produto.idCategoria;
+            const novoVinculo = vinculoImagem ?? produto.vinculoImagem;
 
-            const resultado = await produtoModel.atualizarCliente(
+            const resultado = await produtoModel.atualizarProduto(
                 idProduto,
                 novoNome,
                 novoValor,
-                novoVínculo
+                novaCategoria,
+                novoVinculo
             );
 
             if (!resultado || resultado.affectedRows === 0) {
@@ -125,8 +128,11 @@ const produtoController = {
             return res.status(200).json({
                 message: 'Produto atualizado com sucesso.',
                 data: {
-                    idproduto,
-                    descricao: novaDescricao
+                    idProduto,
+                    nome: novoNome,
+                    valor: novoValor,
+                    categoria: novaCategoria,
+                    vinculoImagem: novoVinculo
                 }
             });
 
@@ -157,29 +163,6 @@ const produtoController = {
             return res.status(500).json({ message: 'Erro interno no servidor.', detalhes: error.message });
         }
     },
-
-    upload: async (req, res) => {
-        try {
-
-            if (!req.file) {
-                return res.status(400).json({ message: "Arquivo não enviado" });
-            }
-
-            res.status(200).json({
-                message: 'Upload realizado com sucesso',
-                file: {
-                    filename: req.file.filename,
-                    size: req.file.size,
-                    mimetype: req.file.mimetype,
-                }
-            });
-
-        } catch (error) {
-
-            console.error(error);
-            res.status(500).json({ message: 'Ocorreu um erro no servidor', errorMessage: error.message })
-        }
-    }
 }
 
 export { produtoController };

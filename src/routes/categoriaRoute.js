@@ -7,6 +7,6 @@ categoriaRoutes.get('/categorias', categoriaController.buscarTodasCategorias);
 categoriaRoutes.get('/categorias/:idCategoria', categoriaController.buscarCategoriaPorID); 
 categoriaRoutes.post('/categorias', categoriaController.incluirCategoria); 
 categoriaRoutes.put('/categorias/:idCategoria', categoriaController.atualizarCategoria); 
-categoriaRoutes.delete('/categorias/:idCategoria', categoriaController.excluindoCliente); 
+categoriaRoutes.delete('/categorias/:idCategoria', categoriaController.excluindoCategoria); 
 
 export { categoriaRoutes };

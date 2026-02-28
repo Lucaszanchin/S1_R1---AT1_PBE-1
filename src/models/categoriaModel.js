@@ -21,12 +21,7 @@ export const categoriaModel = {
     },
 
     atualizarCategoria: async (idCategoria, descricaoCategoria) => {
-        const sql = `
-            UPDATE categoria 
-            SET descricaoCategoria = ? 
-            WHERE idCategoria = ?
-        `;
-
+        const sql = `UPDATE categoria SET descricaoCategoria = ? WHERE idCategoria = ?`;
         const [result] = await pool.query(sql, [descricaoCategoria, idCategoria]);
         return result;
     },

@@ -28,8 +28,8 @@ const categoriaController = {
 
             const resultado = await categoriaModel.selecionarPorId(idCategoria);
 
-            if (!resultado) {
-                return res.status(404).json({ message: 'Categoria não encontrado.' });
+            if (!resultado || resultado.length === 0) {
+                return res.status(404).json({ message: 'Categoria não encontrada.' });
             }
 
             return res.status(200).json(resultado);
@@ -84,7 +84,7 @@ const categoriaController = {
 
             const novaDescricao = descricao ?? categoria.descricao_categoria;
 
-            const resultado = await categoriaModel.atualizarCliente(
+            const resultado = await categoriaModel.atualizarCategoria(
                 idCategoria,
                 novaDescricao
             );
@@ -107,7 +107,7 @@ const categoriaController = {
         }
     },
 
-    excluindoCliente: async (req, res) => {
+    excluindoCategoria: async (req, res) => {
         try {
             const id = Number(req.params.idCategoria);
 
