@@ -30,5 +30,11 @@ export const categoriaModel = {
         const sql = 'DELETE FROM categoria WHERE idCategoria = ?';
         const [result] = await pool.query(sql, [idCategoria]);
         return result;
+    },
+
+    verificarProdutosVinculados: async (idCategoria) => {
+        const sql = 'SELECT COUNT(*) AS total FROM produto WHERE idCategoria = ?';
+        const [linhas] = await pool.query(sql, [idCategoria]);
+        return linhas[0].total;
     }
 };

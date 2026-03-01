@@ -121,6 +121,14 @@ const categoriaController = {
                 return res.status(404).json({ message: 'Categoria não encontrada.' });
             }
 
+            const qtdCategorias = await categoriaModel.verificarProdutosVinculados(id);
+
+            if (qtdCategorias > 0) {
+                return res.status(400).json({
+                    message: `Não é possível excluir. O pedido possui ${qtdCategorias} entrega vinculada.`,
+                });
+            }
+
             const exclusao = await categoriaModel.deleteCategoria(id);
 
             if (exclusao.affectedRows === 1) {
@@ -131,7 +139,7 @@ const categoriaController = {
             console.error(error);
             return res.status(500).json({ message: 'Erro interno no servidor.', detalhes: error.message });
         }
-    }
+    },
 }
 
 export { categoriaController };
