@@ -41,7 +41,7 @@ const produtoController = {
         }
     },
 
-    buscarProdutoPorIdCategoria: async (req, res) => {
+    buscarProdutoPorCategoria: async (req, res) => {
         try {
             const idCategoria = Number(req.params.idCategoria);
 
@@ -49,7 +49,7 @@ const produtoController = {
                 return res.status(400).json({ message: 'ID inválido.' });
             }
 
-            const resultado = await categoriaModel.selecionarPorId(idCategoria);
+            const resultado = await produtoModel.selecionarPorIdCategoria(idCategoria);
 
             if (!resultado) {
                 return res.status(404).json({ message: 'categoria não encontrado.' });
@@ -66,39 +66,39 @@ const produtoController = {
     incluirProduto: async (req, res) => {
         try {
             const vinculoImagem = req.file ? req.file.path : null;
-            const { nome, valor, categoria} = req.body;
-            
+            const { nome, valor, categoria } = req.body;
+
             if (!nome || !valor || !categoria) {
                 return res.status(400).json({ message: 'Os dados envidos estão incorretos. Envie novamente.' });
             }
-            
-            
+
+
             const resultado = await produtoModel.inserirProduto(
                 nome.trim(), valor.trim(), categoria.trim(), vinculoImagem
             );
-            
+
             if (resultado.affectedRows === 1 && resultado.insertId) {
                 res.status(201).json({ message: 'Registro incluído com sucesso', result: resultado });
             } else {
                 throw new Error('Ocorreu um erro ao incluir o registro');
             }
-            
+
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: 'Ocorreu um erro no servidor', errorMessage: error.message });
         }
     },
-    
+
     atualizarProduto: async (req, res) => {
         try {
             const vinculoImagem = req.file ? req.file.path : null;
             const idProduto = Number(req.params.idProduto);
-            
+
             if (isNaN(idProduto) || idProduto <= 0) {
                 return res.status(400).json({ message: 'ID inválido.' });
             }
 
-            let { nome, valor, categoria} = req.body;
+            let { nome, valor, categoria } = req.body;
 
             const produtoAtual = await produtoModel.selecionarPorId(idProduto);
 

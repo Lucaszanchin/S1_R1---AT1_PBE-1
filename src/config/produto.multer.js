@@ -5,13 +5,13 @@ import fs from 'fs';
 
 const baseUploadDir = path.resolve(process.cwd(), 'uploads');
 
-const verificaDir = (dir) =>{
-    if(!fs.existsSync(dir)){
-        fs.mkdirSync(dir, {recursive:true})
+const verificaDir = (dir) => {
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true })
     }
 }
 
-const createMuter =({folder, allowedTypes, fileSize}) => {
+const createMuter = ({ folder, allowedTypes, fileSize }) => {
     const uploadDir = path.join(baseUploadDir, folder)
 
     verificaDir(uploadDir)
@@ -20,23 +20,23 @@ const createMuter =({folder, allowedTypes, fileSize}) => {
         destination: (req, file, cb) => {
             cb(null, uploadDir)
         },
-        filename:(req, file, cb) => {
+        filename: (req, file, cb) => {
             const hash = crypto.randomBytes(12).toString('hex');
             cb(null, `${hash}-${file.originalname}`)
         }
     });
 
     const fileFilter = (req, file, cb) => {
-        if(!allowedTypes.includes(file.mimetype)){
+        if (!allowedTypes.includes(file.mimetype)) {
             return cb(new Error('Tipo de arquivo não permitido'));
         }
 
         cb(null, true);
     }
 
-    return multer ({
+    return multer({
         storage,
-        limits: {fileSize},
+        limits: { fileSize },
         fileFilter
     })
 }

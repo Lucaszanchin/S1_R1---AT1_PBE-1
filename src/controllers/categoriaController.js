@@ -77,7 +77,7 @@ const categoriaController = {
             const categoriaAtual = await categoriaModel.selecionarPorId(idCategoria);
 
             if (!categoriaAtual || categoriaAtual.length === 0) {
-                return res.status(404).json({ message: 'Cliente não encontrado.' });
+                return res.status(404).json({ message: 'Categoria não encontrada.' });
             }
 
             const categoria = categoriaAtual[0];
@@ -90,11 +90,11 @@ const categoriaController = {
             );
 
             if (!resultado || resultado.affectedRows === 0) {
-                return res.status(500).json({ message: 'Erro ao atualizar o Cliente.' });
+                return res.status(500).json({ message: 'Erro ao atualizar a categoria.' });
             }
 
             return res.status(200).json({
-                message: 'Cliente atualizado com sucesso.',
+                message: 'Categoria atualizada com sucesso.',
                 data: {
                     idCategoria,
                     descricao: novaDescricao
